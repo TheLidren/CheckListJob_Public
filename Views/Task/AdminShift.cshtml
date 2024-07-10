@@ -1,0 +1,68 @@
+﻿@model AdminShiftViewModel
+
+@{
+    string SendLink(string method, int taskId)
+    {
+        return $"/Task/{method}?taskId={taskId}&tittle={Model.Title}&shiftId={Model.SelectedShift}&pageSort={Model.AdminShiftSort.CurrentSort}";
+    }
+}
+
+<script src="/js/submitForm.js"></script>
+<div class="m-5">
+     @using(Html.BeginForm("AdminShift", "Task", FormMethod.Get, new { id = "filter-form"}))
+    {
+        @Html.Hidden("pageSort", Model.AdminShiftSort)
+        <div class="row"> 
+            <div class="col-3">
+                @Html.Label("tittle", "Название:", new { @class = "mb-2" })
+                @Html.TextBox("tittle", "", new { type = "text", @class = "form-control" })
+            </div>
+            <div class="col-2">
+                @Html.Label("shiftId", "Смена:", new { @class = "mb-2" })
+                @Html.DropDownList("shiftId", (SelectList)Model.Shifts, new { @class = "form-select" })
+            </div>
+            <div class="col-2 mt-2">
+                <input type="submit" value="Фильтрация" class="btn btn-light m-4" />
+            </div>
+        </div>
+    }
+    <table class="table table-bordered fs-6 mt-3">
+        <tr class="text-center fs-5">
+            <th class="col-3">@Html.ActionLink("Название", "AdminShift", "Task", null, new { @class = "text-decoration-none text-primary submit", parameter = Model.AdminShiftSort.NumberSort })</th>
+            <th class="col-4">Описание</th>
+            <th class="col-1">@Html.ActionLink("Смена", "AdminShift", "Task", null, new { @class = "text-decoration-none text-primary submit", parameter = Model.AdminShiftSort.ShiftSort })</th>
+            <th class="col-1">@Html.ActionLink("Время", "AdminShift", "Task", null, new { @class = "text-decoration-none text-primary submit", parameter = Model.AdminShiftSort.StartTimeSort })</th>
+            <th class="col-1"></th>
+            <th class="col-1">@Html.ActionLink("Уведомлять", "AdminShift", "Task", null, new { @class = "text-decoration-none text-primary submit", parameter = Model.AdminShiftSort.NotifySort })</th>
+            <th class="col-1">@Html.ActionLink("Архив", "AdminShift", "Task", null, new { @class = "text-decoration-none text-primary submit", parameter = Model.AdminShiftSort.StatusSort })</th>
+        </tr>
+
+        @foreach (var item in Model.ShiftTasks)
+        {
+            <tr>
+                <td>
+                    <p class="fw-bold d-inline text-dark">@item.Number<text>: </text></p>@item.Name
+                </td>
+                <td>
+                    @item.Description
+                </td>
+                <td>
+                    @item.Shift.Name
+                </td>
+                <td align="center">
+                    @item.StartTime.ToString(@"hh\:mm") - @item.FinishTime.ToString(@"hh\:mm")
+                </td>
+                <td class="text-center">
+                    @Html.ActionLink("Редактировать", "EditTask", "Task", new { taskId = item.Id }, new { @class = "btn btn-primary w-100 m-0" })
+                </td>
+                <td class="text-center">
+                    <input class="form-check-input" type="checkbox" , parameter="" onclick='document.location.replace("@SendLink("DeleteNotify", item.Id)")' @(item.NotifyUser ? "checked" : "" ) />
+                </td>
+                <td class="text-center">
+                    <input class="form-check-input" type="checkbox" onclick='document.location.replace("@SendLink("DeleteTask", item.Id)")' @(!item.Status ? "checked" : "") />
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+

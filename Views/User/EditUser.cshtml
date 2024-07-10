@@ -1,0 +1,35 @@
+﻿@model CheckListJob.ViewModels.UserViewModel
+@Html.ValidationSummary(true)
+
+@using (Html.BeginForm("EditUser", "User", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Id)
+    <div class="container-fluid m-4">
+        <h4 class="ms-3">Изменение пользователя № @Model.Id</h4>
+        <div class="form-row">
+            <div class="m-3 form-group col-md-6">
+                @Html.LabelFor(m => m.Surname, "Фамилия:", new { @class = "mb-2" })
+                @Html.TextBoxFor(m => m.Surname, new { type = "text", @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Surname)
+            </div>
+            <div class="m-3 form-group col-md-6">
+                @Html.LabelFor(m => m.Name, "Имя:", new { @class = "mb-2" })
+                @Html.TextBoxFor(m => m.Name, new { type = "text", @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Name)
+            </div>
+            <div class="m-3 form-group col-md-6">
+                @Html.LabelFor(m => m.Patronymic, "Отчество:", new { @class = "mb-2" })
+                @Html.TextBoxFor(m => m.Patronymic, new { type = "text", @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Patronymic)
+            </div>
+            <div class="m-3 form-group col-md-6">
+                @Html.LabelFor(m => m.Login, "Email:", new { @class = "mb-2" })
+                @Html.TextBoxFor(m => m.Login, new { type = "text", @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Login)
+            </div>
+
+            <input type="submit" class="m-3 btn btn-primary mt-2" value="Сохранить" />
+        </div>
+    </div>
+}

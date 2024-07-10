@@ -1,0 +1,54 @@
+﻿@model IEnumerable<User>
+
+<div id="modDialog" class="modal fade" @*tabindex="-1" aria-hidden="true"*@>
+    <div id="dialogContent" class="modal-dialog"></div>
+</div>
+
+<div class="container">
+    <table class="table fs-5">
+        <thead>
+            <tr class="text-center"> 
+                <th scope="col-5">ФИО</th>
+                <th scope="col-5">Почта</th>
+                <th scope="col-1">Роль</th>
+                <th scope="col-1">Архив</th>
+                <th class="w-25"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Surname @item.Name[0]<text>.</text> @item.Patronymic[0]<text>.</text></td>
+                    <td>@item.Login</td>
+                    <td>@item.Role.Name</td>
+                    <td class="text-center m-auto">
+                        <input class="form-check-input" type="checkbox" onclick='document.location.replace("/User/DeleteUser?userId=@item.Id")' @(!item.Status ? "checked" : "") />
+                    </td>
+                    <td>
+                        <div class="dropdown">
+                            <a class="btn btn-secondary rounded dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Действия
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item modalClick" asp-controller="User" asp-action="ResetPassword" asp-route-userId="@item.Id">Сбросить пароль</a></li>
+                                <li><a class="dropdown-item modalClick" asp-controller="User" asp-action="EditRole" asp-route-userId="@item.Id">Изменить роль</a></li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script>
+        $(function() {
+        $(".modalClick").click(function (e) {
+            e.preventDefault();
+            $.get(this.href, function (data) {
+                $('#dialogContent').html(data);
+                $('#modDialog').modal('show');
+            });
+        });
+    })
+</script>
