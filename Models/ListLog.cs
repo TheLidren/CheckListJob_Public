@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace CheckListJob.Models
+﻿namespace CheckListJob.Models
 {
     public class ListLog
     {

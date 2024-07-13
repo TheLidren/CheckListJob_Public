@@ -1,7 +1,4 @@
-﻿using Microsoft.CodeAnalysis.Elfie.Extensions;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Web.Administration;
-using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace CheckListJob.Models
 {

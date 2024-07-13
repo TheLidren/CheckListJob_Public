@@ -28,8 +28,11 @@
     }
     <table class="table table-bordered fs-6 mt-3">
         <tr class="text-center fs-5">
-            <th class="col-3">@Html.ActionLink("Название", "AdminShift", "Task", null, new { @class = "text-decoration-none text-primary submit", parameter = Model.AdminShiftSort.NumberSort })</th>
-            <th class="col-4">Описание</th>
+            <th width="1№">
+                №
+            </th>
+            <th class="col-2">@Html.ActionLink("Название", "AdminShift", "Task", null, new { @class = "text-decoration-none text-primary submit", parameter = Model.AdminShiftSort.NumberSort })</th>
+            <th class="col-3">Описание</th>
             <th class="col-1">@Html.ActionLink("Смена", "AdminShift", "Task", null, new { @class = "text-decoration-none text-primary submit", parameter = Model.AdminShiftSort.ShiftSort })</th>
             <th class="col-1">@Html.ActionLink("Время", "AdminShift", "Task", null, new { @class = "text-decoration-none text-primary submit", parameter = Model.AdminShiftSort.StartTimeSort })</th>
             <th class="col-1"></th>
@@ -40,8 +43,11 @@
         @foreach (var item in Model.ShiftTasks)
         {
             <tr>
+                <td class="m-auto pe-auto">
+                    @item.Number
+                </td>
                 <td>
-                    <p class="fw-bold d-inline text-dark">@item.Number<text>: </text></p>@item.Name
+                    @item.Name
                 </td>
                 <td>
                     @item.Description

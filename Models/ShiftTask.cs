@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CheckListJob.Models
 {
@@ -34,15 +33,5 @@ namespace CheckListJob.Models
 
         public ICollection<ListLog>? ListLogs { get; set; }
         public ICollection<ShiftTaskHst>? ShiftTaskHsts { get; set; }
-    }
-
-    public enum SortState
-    {
-        StartTimeAsc,
-        StartTimeDesc,
-        FinishTimeAsc,
-        FinishTimeDesc,
-        NumberAsc,
-        NumberDesc
     }
 }
