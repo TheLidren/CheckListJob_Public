@@ -1,11 +1,7 @@
 ﻿using CheckListJob.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Elfie.Model;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.JSInterop;
-using MySqlX.XDevAPI;
 
 namespace CheckListJob.Controllers
 {

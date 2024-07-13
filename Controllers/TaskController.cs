@@ -1,16 +1,11 @@
 using CheckListJob.Models;
 using CheckListJob.ViewModels.AdminShift;
 using CheckListJob.ViewModels.Journal;
+using CheckListJob.ViewModels.ListTask;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using System.Diagnostics;
-using System.Net;
-using System.Text;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CheckListJob.Controllers
 {
@@ -20,61 +15,21 @@ namespace CheckListJob.Controllers
         private User user = null!;
         private ListLog listLog = null!;
         private ShiftTaskHst hst = null!;
-        private readonly string AppId = "c30481e2-2ab2-415a-b092-9419f4b413f4";
-        private readonly string ApiKey = "ZTdkMDZiNGQtNTkwYy00Njk5LTk3MGYtODA5ZTY4NzVkY2I4";
-        private readonly string ApiUrl = "https://onesignal.com/api/v1/notifications";
-
-        public void SendPushNotification(string name, short shiftId)
-        {
-            var webRequest = WebRequest.Create($"{ApiUrl}") as HttpWebRequest;
-            webRequest.KeepAlive = true;
-            webRequest.Method = "POST";
-            webRequest.ContentType = "application/json; charset=utf-8";
-            webRequest.Headers.Add("authorization", $"Basic {ApiKey}");
-
-            var obj = new
-            {
-                app_id = AppId,
-                headings = new { en = name }, //Заголовок push-уведомления
-                contents = new { en = "Пора выполнить задание" }, //описание
-                included_segments = new string[] { "All" },
-                url = $"Shift/ListShift/?shiftId={shiftId}"
-            };
-            var param = JsonConvert.SerializeObject(obj);
-            var byteArray = Encoding.UTF8.GetBytes(param);
-
-            using (var writer = webRequest.GetRequestStream())
-            {
-                writer.Write(byteArray, 0, byteArray.Length);
-            }
-
-            using var response = webRequest.GetResponse() as HttpWebResponse;
-            if (response != null)
-            {
-                using var reader = new StreamReader(response.GetResponseStream());
-                var responseContent = reader.ReadToEnd();
-            }
-        }
-
 
         [Authorize(Roles = "user,admin")]
-        public IActionResult ListTask(short shiftId, SortState sortShift = SortState.StartTimeAsc)
+        public IActionResult ListTask(short shiftId, ShiftTaskEnum sortShift = ShiftTaskEnum.NumberAsc)
         {
 
-            ViewData["shiftId"] = shiftId;
             ViewData["taskName"] = "";
-            ViewData["StartTimeSort"] = sortShift == SortState.StartTimeAsc ? SortState.StartTimeDesc : SortState.StartTimeAsc;
-            ViewData["FinishTimeSort"] = sortShift == SortState.FinishTimeAsc ? SortState.FinishTimeDesc : SortState.FinishTimeAsc;
-            ViewData["NumberSort"] = sortShift == SortState.NumberAsc ? SortState.NumberDesc : SortState.NumberAsc;
             IQueryable<ShiftTask> listShifts = listContext.ShiftTasks.Where(a => a.ShiftId == shiftId && a.Status && (a.LastAction.Value.Date < DateTime.Now.Date || a.LastAction == null));
             listShifts = sortShift switch
             {
-                SortState.StartTimeAsc => listShifts.OrderBy(s => s.StartTime),
-                SortState.StartTimeDesc => listShifts.OrderByDescending(s => s.StartTime),
-                SortState.FinishTimeAsc => listShifts.OrderBy(s => s.FinishTime),
-                SortState.FinishTimeDesc => listShifts.OrderByDescending(s => s.FinishTime),
-                SortState.NumberAsc => listShifts.OrderBy(s => s.Number),
-                SortState.NumberDesc => listShifts.OrderByDescending(s => s.Number),
+                ShiftTaskEnum.StartTimeAsc => listShifts.OrderBy(s => s.StartTime),
+                ShiftTaskEnum.StartTimeDesc => listShifts.OrderByDescending(s => s.StartTime),
+                ShiftTaskEnum.FinishTimeAsc => listShifts.OrderBy(s => s.FinishTime),
+                ShiftTaskEnum.FinishTimeDesc => listShifts.OrderByDescending(s => s.FinishTime),
+                ShiftTaskEnum.NumberAsc => listShifts.OrderBy(s => s.Number),
+                ShiftTaskEnum.NumberDesc => listShifts.OrderByDescending(s => s.Number),
                 _ => throw new NotImplementedException(),
             };
             hst = listContext.ShiftTaskHsts.Include(u => u.ShiftTask).Include(u => u.User)
@@ -86,13 +41,18 @@ namespace CheckListJob.Controllers
                         && u.ShiftTask.NotifyUser == true && u.ShiftTask.Status == true).FirstOrDefault();
             if (hst != null)
             {
-                //SendPushNotification(hst.ShiftTask.Name, shiftId);
                 ViewData["taskName"] = hst.ShiftTask.Name;
                 hst.LastNotify = DateTime.Now;
                 listContext.Entry(hst).State = EntityState.Modified;
                 listContext.SaveChanges();
             }
-            return View(listShifts);
+            ShiftTaskViewModel shiftTaskViewModel = new()
+            {
+                ShiftTasks = listShifts,
+                ShiftTaskSort = new ShiftTaskSort(sortShift),
+                ShiftId = shiftId
+            };
+            return View(shiftTaskViewModel);
         }
 
         [Authorize(Roles = "admin")]
@@ -130,7 +90,7 @@ namespace CheckListJob.Controllers
 
 
         [Authorize(Roles = "admin, user")]
-        public IActionResult CompleteTask(int taskId, short shiftId)
+        public IActionResult CompleteTask(int taskId, short shiftId, ShiftTaskEnum sortShift = ShiftTaskEnum.NumberAsc)
         {
             user = listContext.Users.Where(u => u.Login == HttpContext.User.Identity.Name).FirstOrDefault();
             listLog = new ListLog { ShiftTaskId = taskId, UserId = user.Id, MarkAction = DateTime.Now };
@@ -140,9 +100,9 @@ namespace CheckListJob.Controllers
             listContext.Entry(shiftTask).State = EntityState.Modified;
 
             listContext.SaveChanges();
-            return RedirectToAction("ListTask", new { shiftId });
+            return RedirectToAction("ListTask", new { shiftId, sortShift });
         }
-
+        
         [Authorize(Roles = "admin")]
         public IActionResult JournalAction(int userId = 0, short shiftId = 0, int countRows = 50, JournalEnum pageSort = JournalEnum.MarkActionDesc, DateTime? dateStart = null, DateTime? dateEnd = null)
         {
@@ -286,9 +246,5 @@ namespace CheckListJob.Controllers
             listContext.SaveChanges();
             return RedirectToAction("AdminShift", new { tittle, shiftId, pageSort });
         }
-
-
-
-
     }
 }

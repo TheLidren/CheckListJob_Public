@@ -20,7 +20,7 @@
                     // show notification here
                     var notify = new Notification(taskName, {
                         body: 'Пора выполнить задание',
-                        icon: 'https://www.mtbank.by/upload/images/services/Logo_Product_services_MB_300x300.png',
+                        icon: '/wwwroot/images/Logo_Mtbank.png',
                     });
                     notify.addEventListener('click', () => {
 

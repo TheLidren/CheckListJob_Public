@@ -1,24 +1,28 @@
 ﻿@using Newtonsoft.Json
-@model IEnumerable<CheckListJob.Models.ShiftTask>
-<meta http-equiv="refresh" content="10" />
-<div class="m-5">
+@model CheckListJob.ViewModels.ListTask.ShiftTaskViewModel
+@* <meta http-equiv="refresh" content="10" />
+ *@<div class="m-5">
     <table class="table table-bordered fs-5">
         <tr class="text-center fs-6">
             <th class="col-1"></th>
-            <th class="col-4">@Html.ActionLink("Название", "ListTask", "Task", new { shiftId = ViewData["shiftId"], sortShift = ViewData["NumberSort"] }, new { @class = "text-decoration-none text-primary" })</th>
+            <th width="1%">№</th>
+            <th class="col-4">@Html.ActionLink("Название", "ListTask", "Task", new { shiftId = Model.ShiftId, sortShift = Model.ShiftTaskSort.NumberSort }, new { @class = "text-decoration-none text-primary" })</th>
             <th class="col-5">Описание</th>
-            <th class="col-1">@Html.ActionLink("Время до", "ListTask", "Task", new { shiftId = ViewData["shiftId"], sortShift = ViewData["StartTimeSort"] }, new { @class = "text-decoration-none text-primary" })</th>
-            <th class="col-1">@Html.ActionLink("Время после", "ListTask", "Task", new { shiftId = ViewData["shiftId"], sortShift = ViewData["FinishTimeSort"] }, new { @class = "text-decoration-none text-primary" })</th>
+            <th class="col-1">@Html.ActionLink("Время до", "ListTask", "Task", new { shiftId = Model.ShiftId, sortShift = Model.ShiftTaskSort.StartTimeSort }, new { @class = "text-decoration-none text-primary" })</th>
+            <th class="col-1">@Html.ActionLink("Время после", "ListTask", "Task", new { shiftId = Model.ShiftId, sortShift = Model.ShiftTaskSort.FinishTimeSort }, new { @class = "text-decoration-none text-primary" })</th>
         </tr>
 
-        @foreach (var item in Model)
+        @foreach (var item in Model.ShiftTasks)
         {
             <tr>
                 <td>
-                    @Html.ActionLink("Выполнил", "CompleteTask", "Task", new { taskId = item.Id, shiftId = ViewData["shiftId"] }, new { @class = "btn btn-success w-100 m-0" })
+                    @Html.ActionLink("Выполнил", "CompleteTask", "Task", new { taskId = item.Id, shiftId = Model.ShiftId, sortShift = Model.ShiftTaskSort.CurrentSort }, new { @class = "btn btn-success w-100 m-0" })
+                </td>
+                <td class="m-auto pe-auto">
+                    @item.Number
                 </td>
                 <td>
-                    <p class="fw-bold d-inline text-dark">@item.Number<text>: </text></p>@item.Name
+                    @item.Name
                 </td>
                 <td>
                     @item.Description
@@ -38,7 +42,7 @@
 {
     <script type="text/javascript">
         $(document).ready(function () {
-            notifyMe(@ViewData["shiftId"], @Html.Raw(JsonConvert.SerializeObject(@ViewData["taskName"])));
+            notifyMe(@Model.ShiftId, @Html.Raw(JsonConvert.SerializeObject(@ViewData["taskName"])));
         });
 
     </script>

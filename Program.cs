@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
-
 namespace CheckListJob
 {
     public class Program
@@ -16,7 +14,10 @@ namespace CheckListJob
                     options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(_ => "Данное поле не должно быть пустым");
                 });
             builder.Services.AddAuthentication("Cookies")
-                .AddCookie(options => options.LoginPath = "/User/SignIn");
+                .AddCookie(options => {
+                    options.LoginPath = "/User/SignIn";
+                    options.AccessDeniedPath = "/Home/AccessDenied";
+                });
             builder.Services.AddAuthorization();
             builder.Services.AddSignalR();
 

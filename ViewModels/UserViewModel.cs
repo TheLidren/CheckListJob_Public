@@ -1,7 +1,5 @@
-﻿using CheckListJob.Models;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
 namespace CheckListJob.ViewModels
 {
