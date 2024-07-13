@@ -39,7 +39,7 @@ namespace CheckListJob.Controllers
 
         }
 
-        [HttpGet] //Авторизация
+        [HttpGet] //РђРІС‚РѕСЂРёР·Р°С†РёСЏ
         public IActionResult SignIn()
         {
             return View();
@@ -50,32 +50,32 @@ namespace CheckListJob.Controllers
         {
             if (string.IsNullOrEmpty(user.Password))
             {
-                ModelState.AddModelError("Password", "Проверьте корректность ввода данных");
+                ModelState.AddModelError("Password", "РџСЂРѕРІРµСЂСЊС‚Рµ РєРѕСЂСЂРµРєС‚РЅРѕСЃС‚СЊ РІРІРѕРґР° РґР°РЅРЅС‹С…");
                 return View(user);
             }
             User userCheck = listContext.Users.Where(u => u.Login == user.Login && u.Password == user.Password.ToSHA256String()).Include(r => r.Role).FirstOrDefault();
             if (userCheck == null)
             {
-                ModelState.AddModelError("Password", "Проверьте корректность ввода данных");
+                ModelState.AddModelError("Password", "РџСЂРѕРІРµСЂСЊС‚Рµ РєРѕСЂСЂРµРєС‚РЅРѕСЃС‚СЊ РІРІРѕРґР° РґР°РЅРЅС‹С…");
                 return View(user);
             }
             if (!userCheck.Status)
             {
-                ModelState.AddModelError("Login", "Администратору необходимо включить учётную запись");
+                ModelState.AddModelError("Login", "РђРґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂСѓ РЅРµРѕР±С…РѕРґРёРјРѕ РІРєР»СЋС‡РёС‚СЊ СѓС‡С‘С‚РЅСѓСЋ Р·Р°РїРёСЃСЊ");
                 return View(user);
             }
-            var claims = new List<Claim> { new (ClaimTypes.Name, userCheck.Login), new (ClaimTypes.Role, userCheck.Role.Name) };
+            var claims = new List<Claim> { new(ClaimTypes.Name, userCheck.Login), new(ClaimTypes.Role, userCheck.Role.Name) };
             ClaimsIdentity claimsIdentity = new(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
             return RedirectToAction("WelcomeIndex", "Home");
         }
 
-        [HttpGet] //Регистрация
+        [HttpGet] //Р РµРіРёСЃС‚СЂР°С†РёСЏ
         public IActionResult SignUp()
         {
             return View();
         }
-        [HttpPost] //Регистрация
+        [HttpPost] //Р РµРіРёСЃС‚СЂР°С†РёСЏ
         public IActionResult SignUp(User user)
         {
             if (ModelState.IsValid)
@@ -83,7 +83,7 @@ namespace CheckListJob.Controllers
                 User userExit = listContext.Users.Where(m => m.Login == user.Login).FirstOrDefault();
                 if (userExit != null)
                 {
-                    ModelState.AddModelError("Login", "Данный login уже зарегестрирован в системе");
+                    ModelState.AddModelError("Login", "Р”Р°РЅРЅС‹Р№ login СѓР¶Рµ Р·Р°СЂРµРіРµСЃС‚СЂРёСЂРѕРІР°РЅ РІ СЃРёСЃС‚РµРјРµ");
                     return View(user);
                 }
                 user.Status = false; user.RoleId = listContext.Roles.Where(m => m.Name == "user").FirstOrDefault().Id; user.Password = user.Password.ToSHA256String();
@@ -197,7 +197,7 @@ namespace CheckListJob.Controllers
                 {
                     User = userSelect,
                     Roles = new SelectList(listContext.Roles, "Id", "Name", userSelect.RoleId)
-            };
+                };
                 return View(roleViewModel);
             }
             else return RedirectToAction("ErrorIndex", "Home");
