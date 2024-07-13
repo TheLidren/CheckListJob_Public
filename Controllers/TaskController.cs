@@ -75,7 +75,7 @@ namespace CheckListJob.Controllers
                 AdminShiftEnum.NotifyDesc => shiftTasks.OrderByDescending(task => task.NotifyUser),
                 AdminShiftEnum.NumberAsc => shiftTasks.OrderBy(s => s.Number),
                 AdminShiftEnum.NumberDesc => shiftTasks.OrderByDescending(s => s.Number),
-                _ => throw new NotSupportedException("Что-то пошло не так при сортировке")
+                _ => throw new NotSupportedException("Р§С‚Рѕ-С‚Рѕ РїРѕС€Р»Рѕ РЅРµ С‚Р°Рє РїСЂРё СЃРѕСЂС‚РёСЂРѕРІРєРµ")
 
             };
             AdminShiftViewModel adminShiftView = new(listContext.Shifts.ToList())
@@ -123,7 +123,7 @@ namespace CheckListJob.Controllers
                 JournalEnum.EmailDesc => listLogs.OrderByDescending(act => act.User.Login),
                 JournalEnum.ShiftAsc => listLogs.OrderBy(act => act.ShiftTask.Shift.Name),
                 JournalEnum.ShiftDesc => listLogs.OrderByDescending(act => act.ShiftTask.Shift.Name),
-                _ => throw new NotSupportedException("Что-то пошло не так при сортировке")
+                _ => throw new NotSupportedException("Р§С‚Рѕ-С‚Рѕ РїРѕС€Р»Рѕ РЅРµ С‚Р°Рє РїСЂРё СЃРѕСЂС‚РёСЂРѕРІРєРµ")
 
             };
             JournalViewModel journalViewModel = new(listContext.Users.ToList(),listContext.Shifts.ToList())
@@ -157,8 +157,8 @@ namespace CheckListJob.Controllers
             IQueryable<ShiftTask>? shiftNumber = listContext.ShiftTasks.Where(x => x.ShiftId == shiftTask.ShiftId && x.Status == true);
             if (shiftNumber.Where(n => n.Number == shiftTask.Number).Count() > 0)
             {
-                ViewBag.LastNumber = "Последний номер: " + shiftNumber.Max(u => u.Number);
-                ModelState.AddModelError("Number", "Данный номер уже отмечён в заданиях");
+                ViewBag.LastNumber = "РџРѕСЃР»РµРґРЅРёР№ РЅРѕРјРµСЂ: " + shiftNumber.Max(u => u.Number);
+                ModelState.AddModelError("Number", "Р”Р°РЅРЅС‹Р№ РЅРѕРјРµСЂ СѓР¶Рµ РѕС‚РјРµС‡С‘РЅ РІ Р·Р°РґР°РЅРёСЏС…");
             }
             if (ModelState.IsValid)
             {
@@ -177,7 +177,7 @@ namespace CheckListJob.Controllers
                     listContext.ShiftTaskHsts.Add(new ShiftTaskHst { ShiftTaskId = shiftTask.Id, UserId = item.Id });
                 }
                 listContext.SaveChanges();
-                TempData["Review"] = "Задание добавлено";
+                TempData["Review"] = "Р—Р°РґР°РЅРёРµ РґРѕР±Р°РІР»РµРЅРѕ";
                 return RedirectToAction("CreateTask") ;
             }
             return View(shiftTask);
@@ -193,7 +193,7 @@ namespace CheckListJob.Controllers
                 listShift.StartTime = listShift.StartTime.Add(new TimeSpan(-1, 0, 0, 0));
             if (listShift.FinishTime.Days >= 1)
                 listShift.FinishTime = listShift.FinishTime.Add(new TimeSpan(-1, 0, 0, 0));
-            ViewBag.LastNumber = "Последний номер: " + listContext.ShiftTasks.Where(x => x.ShiftId == listShift.ShiftId).Max(u => u.Number);
+            ViewBag.LastNumber = "РџРѕСЃР»РµРґРЅРёР№ РЅРѕРјРµСЂ: " + listContext.ShiftTasks.Where(x => x.ShiftId == listShift.ShiftId).Max(u => u.Number);
             ViewBag.Shifts = new SelectList(listContext.Shifts, "Id", "Name");
             return View(listShift);
         }
@@ -207,8 +207,8 @@ namespace CheckListJob.Controllers
             if (shiftNumber.Where(n => n.Number == listShift.Number).Count() > 0)
                 if (shiftNumber.Where(n => n.Number == listShift.Number).FirstOrDefault().Id != listShift.Id)
                 {
-                    ViewBag.LastNumber = "Последний номер: " + shiftNumber.Max(u => u.Number);
-                    ModelState.AddModelError("Number", "Данный номер уже отмечён в заданиях");
+                    ViewBag.LastNumber = "РџРѕСЃР»РµРґРЅРёР№ РЅРѕРјРµСЂ: " + shiftNumber.Max(u => u.Number);
+                    ModelState.AddModelError("Number", "Р”Р°РЅРЅС‹Р№ РЅРѕРјРµСЂ СѓР¶Рµ РѕС‚РјРµС‡С‘РЅ РІ Р·Р°РґР°РЅРёСЏС…");
                 }
             if (ModelState.IsValid)
             {
