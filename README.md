@@ -1,5 +1,6 @@
 # Чек-лист
 Чек-лист (CheckList) — веб-сайт, позволяющий настроить список заданий для каждой рабочей смены[^1]. 
+
 <img src="wwwroot/ReadmeImages/Demo.gif" alt="DemoGif.gif"/>
 
 ### Содержание
@@ -25,7 +26,7 @@
 Веб-сайт должен быть развёрнут в сети Интернет или локальной сети веб-сервера.
 Для корректной работы также необходимо указать корректную строку подключения к БД MySql
 
-<img src="wwwroot/ReadmeImages/ConnString.png" alt="ConnString" height=100 />
+<img src="wwwroot/ReadmeImages/ConnString.png" alt="ConnString"/>
 
 Технологии и компоненты: Asp.Net Core, Entity Framework Core, C#, Bootstrap, HTML5, CSS3, JavaScript
 
