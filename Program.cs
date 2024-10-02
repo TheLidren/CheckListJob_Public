@@ -11,7 +11,7 @@ namespace CheckListJob
             builder.Services.AddRazorPages()
                 .AddMvcOptions(options =>
                 {
-                    options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(_ => "Данное поле не должно быть пустым");
+                    options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(_ => "Р”Р°РЅРЅРѕРµ РїРѕР»Рµ РЅРµ РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ РїСѓСЃС‚С‹Рј");
                 });
             builder.Services.AddAuthentication("Cookies")
                 .AddCookie(options => {
