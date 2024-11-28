@@ -1,25 +1,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CheckListJob.Controllers
+namespace CheckListJob.Controllers;
+[Authorize]
+public class HomeController : Controller
 {
-    [Authorize]
-    public class HomeController : Controller
-    {
 
-        public IActionResult WelcomeIndex()
-        {
-            return View();
-        }
+    public IActionResult WelcomeIndex() => View();
 
-        public IActionResult AccessDenied()
-        {
-            return View();
-        }
-        public IActionResult ErrorIndex()
-        {
-            return View();
-        }
+    public IActionResult AccessDenied() => View();
+    public IActionResult ErrorIndex() => View();
 
-    }
 }

@@ -2,22 +2,20 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CheckListJob.Components
+namespace CheckListJob.Components;
+[Authorize]
+public class ShiftViewComponent : ViewComponent
 {
-    [Authorize]
-    public class ShiftViewComponent : ViewComponent
+    readonly CheckListContext listContext = new();
+
+
+    public IViewComponentResult Invoke(short? shiftId)
     {
-        private readonly CheckListContext listContext = new();
-
-
-        public IViewComponentResult Invoke(short? shiftId)
+        if (shiftId == null)
         {
-            if (shiftId == null)
-            {
-                ViewData["shiftId"] = 0;
-            }
-            ViewBag.Shifts = listContext.Shifts;
-            return View("ShiftInvoke");
+            ViewData["shiftId"] = 0;
         }
+        ViewBag.Shifts = listContext.Shifts;
+        return View("ShiftInvoke");
     }
 }

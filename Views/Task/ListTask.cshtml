@@ -28,7 +28,8 @@
                     @item.Description
                 </td>
                 <td align="center">
-                    @item.StartTime.ToString(@"hh\:mm")
+@*                     @(item.StartTime.Hours < 12 ? item.StartTime.Add(TimeSpan.FromHours(-24)).ToString(@"hh\:mm") : item.StartTime.ToString(@"hh\:mm"))
+ *@                    @item.StartTime.ToString(@"hh\:mm")
                 </td>
                 <td align="center">
                     @item.FinishTime.ToString(@"hh\:mm")

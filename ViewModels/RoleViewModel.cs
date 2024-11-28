@@ -2,15 +2,13 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
-namespace CheckListJob.ViewModels
+namespace CheckListJob.ViewModels;
+public class RoleViewModel
 {
-    public class RoleViewModel
-    {
-        [Required(ErrorMessage = "Обязательное поле")]
-        public User User { get; set; }
+    [Required(ErrorMessage = "Обязательное поле")]
+    public User User { get; set; }
 
-        public SelectList Roles { get; set; }
+    public SelectList Roles { get; set; }
 
-        public Role Role { get; set; }
-    }
+    public Role Role { get; set; }
 }
